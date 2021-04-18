@@ -1,0 +1,45 @@
+.right-column {
+  height: 100%;
+  width: 400px;
+
+  &-header {
+    background-color: $secondary-color;
+    padding: 20px;
+    height: 100px;
+    width: 100%;
+    font-family: Roboto, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 36px;
+    line-height: 42px;
+
+    &-state {
+      font-size: 18px;
+      line-height: 21px;
+    }
+  }
+
+  &-list-holder {
+    &__elem {
+      &-title {
+
+      }
+
+      &-subtitle {
+
+      }
+
+      &-author {
+
+      }
+
+      &-action {
+
+      }
+
+      &_marked {
+        color: #209020;
+      }
+    }
+  }
+}
