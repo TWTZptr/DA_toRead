@@ -40,13 +40,19 @@
     background-color: $secondary-color;
     height: 55px;
     flex-grow: 0;
+    padding: 10px 24px;
 
     &-stats {
       display: flex;
       flex-direction: row;
 
       &_elem {
-        width: 75px;
+        text-align: center;
+        width: 100px;
+        margin-left: 5px;
+        &:first-child {
+          margin-left: 0;
+        }
       }
     }
 
@@ -67,6 +73,23 @@
     &__elem {
       height: 125px;
       width: 100%;
+      padding: 30px;
+      font-family: Roboto, sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 24px;
+      line-height: 28px;
+      border-style: solid;
+      border-width: 1px 1px 0 1px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #209020;
+      }
+
+      &:first-child {
+        border-width: 0 1px;
+      }
 
       &_selected {
         background-color: $select-color;
