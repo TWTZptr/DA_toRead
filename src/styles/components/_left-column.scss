@@ -69,11 +69,19 @@
   &-result-wrapper {
     overflow-y: auto;
     height: 100%;
+    border-width: 0 1px 0 0;
+    border-style: solid;
+
+    &__error {
+      padding: 30px;
+      color: red;
+      font-size: 24px;
+    }
 
     &__elem {
       height: 125px;
       width: 100%;
-      padding: 30px;
+      padding: 20px;
       font-family: Roboto, sans-serif;
       font-style: normal;
       font-weight: normal;
@@ -93,6 +101,7 @@
 
       &_selected {
         background-color: $select-color;
+        font-weight: 900;
       }
     }
   }

@@ -26,24 +26,28 @@ export class BooksUI {
     processSearchResult(data) {
         console.log(data);
         let HTML = "";
-
-        data.docs.forEach(item => {
-            HTML+= `<div class="left-column-result-wrapper__elem">${item.title} 
+        if (data.numFound !== 0) {
+            data.docs.forEach(item => {
+                HTML+= `<div class="left-column-result-wrapper__elem" data-elem-id = "${item.key}">${item.title} 
                     (${item.language === undefined ? "no info" : item.language.join(", ")})</div>`;
-        });
+            });
+       } else {
+            HTML = `<div class="left-column-result-wrapper__error">Nothing found!</div>`
+        }
 
         this._booksList.innerHTML = HTML;
-        HTML = `    <div class="left-column-results-info-stats">
-                        <span class="left-column-results-info-stats_elem">
-                            Found: ${data.numFound}
-                        </span>
-                        <span class="left-column-results-info-stats_elem">
-                            Start: ${data.start}
-                        </span>
-                        <span class="left-column-results-info-stats_elem">
-                             Page size: 100
-                        </span>
-                    </div>`;
+
+        HTML = `<div class="left-column-results-info-stats">
+                    <span class="left-column-results-info-stats_elem">
+                        Found: ${data.numFound}
+                    </span>
+                    <span class="left-column-results-info-stats_elem">
+                            Start: ${data.start + 1}
+                    </span>
+                    <span class="left-column-results-info-stats_elem">
+                         Page size: ${data.docs.length}
+                    </span>
+                </div>`;
 
         this._resultsInfo.innerHTML = HTML;
     }
