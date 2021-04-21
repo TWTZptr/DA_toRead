@@ -65,18 +65,11 @@
       margin-top: 15px;
 
       &_elem {
+        @include make-button;
         margin-right: 20px;
+        flex-grow: 1;
         width: auto;
         height: 30px;
-        flex-grow: 1;
-        border-style: none;
-        border-radius: 3px;
-        cursor: pointer;
-
-        &.inactive {
-          cursor: default;
-          opacity: 0.5;
-        }
 
         &:last-child {
           margin-right: 0;
@@ -109,7 +102,7 @@
       cursor: pointer;
 
       &:hover {
-        background-color: #209020;
+        background-color: $item-mark-color;
       }
 
       &:first-child {

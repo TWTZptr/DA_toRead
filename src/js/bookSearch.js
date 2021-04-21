@@ -1,16 +1,20 @@
 'use strict'
-// TODO: Добавить подгрузку на одну страницу вперед
-export class BooksUI {
+// TODO: infinite scroll + search without enter (3+ chars, debounce)
+
+import { BookInfo } from "./bookInfo";
+
+export class BookSearch {
     constructor(api) {
         this._api = api;
         this._searchInput = document.getElementById("search-input");
-        this._bookInfoHolder = document.getElementById("book-info-holder");
         this._booksList = document.getElementById("books-list");
         this._resultsInfo = document.getElementById("results-info");
         this._changePageButtons = document.getElementById("change-page-buttons");
         this._prevButton = document.getElementById("prev-button");
         this._nextButton = document.getElementById("next-button");
 
+        this._infoUI = new BookInfo();
+        this._selectedPage = null;
         this._searchInput.value = "";
         this._inputBlock = false;
         this._currentPage = 0;
@@ -18,8 +22,16 @@ export class BooksUI {
         this._currentRequest = "";
 
         const searchButton = document.getElementById("search-button");
+
         searchButton.addEventListener("click", this.processSearch.bind(this));
-        this._changePageButtons.addEventListener("click",this.changePage.bind(this));
+        this._changePageButtons.addEventListener("click", this.changePage.bind(this));
+        this._booksList.addEventListener("click", event => {
+            if (event.target.classList.contains("left-column-result-wrapper__elem")) {
+                let selectedElem = this._results[this._currentPage].docs.find(item => item.key === event.target.dataset.elemId);
+                this._infoUI.showInfo(selectedElem);
+                this.selectItem(event.target);
+            }
+        })
     }
 
     async changePage(event) {
@@ -38,7 +50,7 @@ export class BooksUI {
                 this._results.push(newPage);
             }
 
-            this.processSearchResult(this._results[this._currentPage]);
+            this.renderSearchResult(this._results[this._currentPage]);
             this._inputBlock = false;
         }
     }
@@ -50,15 +62,14 @@ export class BooksUI {
             this._currentRequest = this._searchInput.value;
             this._api.search(this._currentRequest, this._currentPage + 1).then(response => {
                 this._results.push(response);
-                this.processSearchResult(response);
-                console.log(this._results);
+                this.renderSearchResult(response);
             }, err => {
                 this.processSearchError(err);
             });
         }
     }
 
-    processSearchResult(data) {
+    renderSearchResult(data) {
         this._booksList.innerHTML = this.makeSearchResult(data);
         this._resultsInfo.innerHTML = this.makeStats(data.numFound, data.docs.length);
         this.changeButtonsState(data.numFound, data.start);
@@ -101,7 +112,7 @@ export class BooksUI {
         let HTML = "";
         if (data.numFound !== 0) {
             data.docs.forEach(item => {
-                HTML+= `<div class="left-column-result-wrapper__elem" data-elem-id = "${item.key}">
+                HTML += `<div class="left-column-result-wrapper__elem" data-elem-id = "${item.key}">
                         ${item.title} (${item.language === undefined ? "no info" : item.language.join(", ")})
                         </div>`;
             });
@@ -113,7 +124,16 @@ export class BooksUI {
     }
 
     processSearchError(err) {
-        console.log(`Error occurred!`);
+        console.log(`Error occurred:`);
         console.log(err);
     }
+
+    selectItem(item) {
+        if (this._selectedPage) {
+            this._selectedPage.classList.remove("left-column-result-wrapper__elem_selected");
+        }
+        item.classList.add("left-column-result-wrapper__elem_selected");
+        this._selectedPage = item;
+    }
+
 }

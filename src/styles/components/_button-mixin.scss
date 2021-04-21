@@ -1,0 +1,15 @@
+@mixin make-button {
+  border-style: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: $button-color;
+
+  &.inactive {
+    cursor: default;
+    opacity: 0.5;
+  }
+
+  &:hover {
+    background-color: $button-hover-color;
+  }
+}

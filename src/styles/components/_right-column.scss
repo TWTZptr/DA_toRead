@@ -23,24 +23,47 @@
 
   &-list-holder {
     &__elem {
-      &-title {
+      border-width: 0 0 1px 0;
+      font-family: Roboto, sans-serif;
+      border-style: solid;
+      padding: 20px;
 
+      &-title {
+        font-family: inherit;
+        font-size: 24px;
+        line-height: 28px;
       }
 
       &-subtitle {
-
+        font-family: inherit;
+        color: $subtitle-color;
+        font-size: 18px;
+        line-height: 21px;
       }
 
       &-author {
-
+        font-family: inherit;
+        font-size: 24px;
+        line-height: 28px;
       }
 
-      &-action {
+      &-actions {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
 
+        &__button {
+          width: auto;
+          height: 35px;
+          margin: 10px 20px 0 20px;
+          padding: 10px;
+
+          @include make-button;
+        }
       }
 
-      &_marked {
-        color: #209020;
+      &.marked {
+        background-color: $item-mark-color;
       }
     }
   }
