@@ -1,5 +1,6 @@
 'use strict'
+
 import { Api } from "./api.js";
 import { BooksUI } from "./booksUI.js";
 
-new BooksUI(new Api);
+const ui = new BooksUI(new Api);

@@ -1,6 +1,8 @@
 .right-column {
   height: 100%;
   width: 400px;
+  border-width: 0 0 0 1px;
+  border-style: solid;
 
   &-header {
     background-color: $secondary-color;

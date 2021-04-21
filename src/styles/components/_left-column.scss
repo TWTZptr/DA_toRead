@@ -1,9 +1,11 @@
 .left-column {
-  display:flex;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
   width: 400px;
+  border-width: 0 1px 0 0;
+  border-style: solid;
 
   &-search {
     display: flex;
@@ -36,9 +38,9 @@
     }
   }
 
-  &-results-info {
+  &-results-bottom {
     background-color: $secondary-color;
-    height: 55px;
+    height: 100px;
     flex-grow: 0;
     padding: 10px 24px;
 
@@ -47,9 +49,10 @@
       flex-direction: row;
 
       &_elem {
+        flex-grow: 1;
         text-align: center;
         width: 100px;
-        margin-left: 5px;
+
         &:first-child {
           margin-left: 0;
         }
@@ -59,9 +62,25 @@
     &-buttons {
       display: flex;
       flex-direction: row;
+      margin-top: 15px;
 
       &_elem {
-        width: 75px;
+        margin-right: 20px;
+        width: auto;
+        height: 30px;
+        flex-grow: 1;
+        border-style: none;
+        border-radius: 3px;
+        cursor: pointer;
+
+        &.inactive {
+          cursor: default;
+          opacity: 0.5;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
       }
     }
   }
@@ -69,8 +88,6 @@
   &-result-wrapper {
     overflow-y: auto;
     height: 100%;
-    border-width: 0 1px 0 0;
-    border-style: solid;
 
     &__error {
       padding: 30px;
@@ -88,7 +105,7 @@
       font-size: 24px;
       line-height: 28px;
       border-style: solid;
-      border-width: 1px 1px 0 1px;
+      border-width: 1px 0 0 1px;
       cursor: pointer;
 
       &:hover {
@@ -96,7 +113,7 @@
       }
 
       &:first-child {
-        border-width: 0 1px;
+        border-width: 0 0 0 1px;
       }
 
       &_selected {
