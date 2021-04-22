@@ -13,7 +13,7 @@ export class BookStorage {
 
         this.initRender();
 
-        window.onbeforeunload = saveBooks;
+        window.onbeforeunload = this.saveBooks.bind(this);
     }
 
     saveBooks() {
@@ -29,7 +29,7 @@ export class BookStorage {
 
         // add books from storage
         this._unmarkedBooks.forEach(item => this.renderUnmarkedBook(item));
-        this._markedBooks.forEach(item => this.renderUnmarkedBook());
+        this._markedBooks.forEach(item => this.renderMarkedBook());
     }
 
     setState() {
@@ -50,6 +50,8 @@ export class BookStorage {
                                 <button class="right-column-list-holder__elem-actions__button" data-action="remove">Remove from list</button>
                             </div>`;
         this._toReadContainer.appendChild(newDiv);
+        const buttons = document.getElementById(book.key);
+        buttons.addEventListener("click", this.processAction.bind(this));
     }
 
     renderUnmarkedBook(book) {
@@ -64,6 +66,8 @@ export class BookStorage {
                                 <button class="right-column-list-holder__elem-actions__button" data-action="remove">Remove from list</button>
                             </div>`;
         this._toReadContainer.appendChild(newDiv);
+        const buttons = document.getElementById(book.key);
+        buttons.addEventListener("click", this.processAction.bind(this));
     }
 
     isInStorage(id) {
@@ -79,16 +83,25 @@ export class BookStorage {
             this._unmarkedBooks.splice(bookToDeleteIndex, 1);
         }
         container.remove();
+        this.setState();
     }
 
     markBook(container, {target}) {
         container.classList.add("marked");
         event.target.innerText = "Unmark";
+
+        const bookToMarkIndex = this._unmarkedBooks.findIndex(item => item.key === container.id);
+        this._markedBooks.push(this._unmarkedBooks[bookToMarkIndex]);
+        this._unmarkedBooks.splice(bookToMarkIndex);
     }
 
     unmarkBook(container, {target}) {
         container.classList.remove("marked");
         event.target.innerText = "Mark as read";
+
+        const bookToUnmarkIndex = this._markedBooks.findIndex(item => item.key === container.id);
+        this._unmarkedBooks.push(this._markedBooks[bookToUnmarkIndex]);
+        this._markedBooks.splice(bookToUnmarkIndex);
     }
 
     processAction(event) {
@@ -116,9 +129,7 @@ export class BookStorage {
             added = true;
             this._unmarkedBooks.push(book);
             this.renderUnmarkedBook(book);
-            const buttons = document.getElementById(book.key);
 
-            buttons.addEventListener("click", this.processAction.bind(this));
         }
         return added;
     }
