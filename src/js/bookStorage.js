@@ -1,5 +1,4 @@
 export class BookStorage {
-    // TODO: Хранить отдельно прочитанные книги и непрочитанные. Потребность в хранении размера отпадет + можно будет рисовать сначала прочитанные, а потом - непрочитанные
     constructor() {
         this._state = document.getElementById("readlist-state");
         this._toReadContainer = document.getElementById("to-read-container");
@@ -29,7 +28,7 @@ export class BookStorage {
 
         // add books from storage
         this._unmarkedBooks.forEach(item => this.renderUnmarkedBook(item));
-        this._markedBooks.forEach(item => this.renderMarkedBook());
+        this._markedBooks.forEach(item => this.renderMarkedBook(item));
     }
 
     setState() {
