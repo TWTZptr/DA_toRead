@@ -5,8 +5,6 @@ export class BookInfo {
         this._infoContainer = document.getElementById("book-info-holder");
         this._storage = new BookStorage();
         this._currentBook = null;
-
-
     }
 
     showInfo(item) {
