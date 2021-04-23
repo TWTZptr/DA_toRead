@@ -15,21 +15,20 @@
                     <button id="search-button">Go!</button>
                 </form>
             </div>
-            <div class="left-column-result-wrapper" id="books-list"></div>
+            <div class="left-column-result-wrapper" id="result-container">
+                <div class="left-column-result-wrapper-results" id="books-list"></div>
+                <div class="left-column-result-wrapper_loading-msg" id="loading-message">Loading...</div>
+            </div>
             <div class="left-column-results-bottom">
                 <div class="left-column-results-bottom-info" id="results-info"></div>
-                <div class="left-column-results-bottom-buttons" id="change-page-buttons">
-                    <button class="left-column-results-bottom-buttons_elem inactive" data-action="prev" id="prev-button">
-                        Previous page
-                    </button>
-                    <button class="left-column-results-bottom-buttons_elem inactive" data-action="next" id="next-button">
-                        Next page
-                    </button>
-                </div>
             </div>
         </section>
-        <section class="center-column" id = "book-info-holder">
-
+        <section class="center-column" >
+            <div class="center-column-holder" id = "book-info-holder">
+            </div>
+            <div class="center-column-message" id="error-message">
+                This book has already been added
+            </div>
         </section>
         <section class ="right-column" >
             <div class="right-column-header">
@@ -39,7 +38,13 @@
                 </div>
             </div>
             <div class="right-column-list-holder" id="to-read-container">
+                <div class="right-column-list-holder-unmarked" id="to-read-unmarked">
 
+                </div>
+
+                <div class="right-column-list-holder-marked" id="to-read-marked">
+
+                </div>
             </div>
         </section>
     </main>

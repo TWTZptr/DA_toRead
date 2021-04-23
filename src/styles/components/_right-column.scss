@@ -22,6 +22,9 @@
   }
 
   &-list-holder {
+    overflow-y: auto;
+    height: calc(100% - 100px);
+
     &__elem {
       border-width: 0 0 1px 0;
       font-family: Roboto, sans-serif;

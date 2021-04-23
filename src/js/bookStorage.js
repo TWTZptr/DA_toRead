@@ -1,11 +1,14 @@
+'use strict'
+
 export class BookStorage {
     constructor() {
         this._state = document.getElementById("readlist-state");
-        this._toReadContainer = document.getElementById("to-read-container");
+        this._markedBooksContainer = document.getElementById("to-read-marked");
+        this._unmarkedBooksContainer = document.getElementById("to-read-unmarked");
 
         console.log(this.getLocalStorageData());
 
-        const {unmarkedBooks, markedBooks} = this.getLocalStorageData();
+        const { unmarkedBooks, markedBooks } = this.getLocalStorageData();
 
         this._unmarkedBooks = unmarkedBooks;
         this._markedBooks = markedBooks;
@@ -21,7 +24,7 @@ export class BookStorage {
             unmarkedBooks: this._unmarkedBooks,
             markedBooks: this._markedBooks
         }));
-    }
+     }
 
     initRender() {
         this.setState();
@@ -39,7 +42,7 @@ export class BookStorage {
 
     renderMarkedBook(book) {
         const newDiv = document.createElement("div");
-        newDiv.setAttribute("class", "right-column-list-holder__elem");
+        newDiv.setAttribute("class", "right-column-list-holder__elem marked");
         newDiv.setAttribute("id", book.key);
         newDiv.innerHTML = `<div class="right-column-list-holder__elem-title">${book.title}</div>
                             <div class="right-column-list-holder__elem-subtitle">${book.subtitle !== undefined ? book.subtitle : "no subtitle"}</div>
@@ -48,7 +51,7 @@ export class BookStorage {
                                 <button class="right-column-list-holder__elem-actions__button" data-action="unmark">Unmark</button>
                                 <button class="right-column-list-holder__elem-actions__button" data-action="remove">Remove from list</button>
                             </div>`;
-        this._toReadContainer.appendChild(newDiv);
+        this._markedBooksContainer.appendChild(newDiv);
         const buttons = document.getElementById(book.key);
         buttons.addEventListener("click", this.processAction.bind(this));
     }
@@ -59,12 +62,12 @@ export class BookStorage {
         newDiv.setAttribute("id", book.key);
         newDiv.innerHTML = `<div class="right-column-list-holder__elem-title">${book.title}</div>
                             <div class="right-column-list-holder__elem-subtitle">${book.subtitle !== undefined ? book.subtitle : "no subtitle"}</div>
-                            <div class="right-column-list-holder__elem-author">${book.author_name[0] !== undefined ? book.author_name[0] : "no info about author"}</div>
+                            <div class="right-column-list-holder__elem-author">${book.author_name !== undefined && book.author_name[0] !== undefined ? book.author_name[0] : "no info about author"}</div>
                             <div class="right-column-list-holder__elem-actions">
                                 <button class="right-column-list-holder__elem-actions__button" data-action="mark">Mark as read</button>
                                 <button class="right-column-list-holder__elem-actions__button" data-action="remove">Remove from list</button>
                             </div>`;
-        this._toReadContainer.appendChild(newDiv);
+        this._unmarkedBooksContainer.appendChild(newDiv);
         const buttons = document.getElementById(book.key);
         buttons.addEventListener("click", this.processAction.bind(this));
     }
@@ -73,7 +76,7 @@ export class BookStorage {
         return this._unmarkedBooks.concat(this._markedBooks).some(item => item.key === id);
     }
 
-    removeBook(container, {target}) {
+    removeBook(container) {
         if (container.classList.contains("marked")) {
             const bookToDeleteIndex = this._markedBooks.indexOf(item => item.key === container.id);
             this._markedBooks.splice(bookToDeleteIndex, 1);
@@ -87,54 +90,54 @@ export class BookStorage {
 
     markBook(container, {target}) {
         container.classList.add("marked");
-        event.target.innerText = "Unmark";
+        target.innerText = "Unmark";
+        target.dataset.action="unmark";
 
         const bookToMarkIndex = this._unmarkedBooks.findIndex(item => item.key === container.id);
         this._markedBooks.push(this._unmarkedBooks[bookToMarkIndex]);
-        this._unmarkedBooks.splice(bookToMarkIndex);
+        this._unmarkedBooks.splice(bookToMarkIndex, 1);
+        this._markedBooksContainer.insertAdjacentElement('beforeend', container); // перемещаем в конец отмеченных
     }
 
     unmarkBook(container, {target}) {
         container.classList.remove("marked");
-        event.target.innerText = "Mark as read";
+        target.innerText = "Mark as read";
+        target.dataset.action = "mark";
 
         const bookToUnmarkIndex = this._markedBooks.findIndex(item => item.key === container.id);
         this._unmarkedBooks.push(this._markedBooks[bookToUnmarkIndex]);
-        this._markedBooks.splice(bookToUnmarkIndex);
+        this._markedBooks.splice(bookToUnmarkIndex, 1);
+        this._unmarkedBooksContainer.insertAdjacentElement('beforeend', container); // перемещаем в конец неотмеченных
     }
 
     processAction(event) {
         if (event.target.nodeName === "BUTTON") {
             const container = event.target.parentNode.parentNode;
-
-            if (event.target.dataset.action === "mark") {
-                if (event.target.innerText === "Mark as read") {
+            if (event.target.dataset.action === "mark" || event.target.dataset.action === "unmark") {
+                if (event.target.dataset.action === "mark") {
                     this.markBook(container, event);
                 } else {
                     this.unmarkBook(container, event);
                 }
             } else {
                 // remove book
-                this.removeBook(container, event);
+                this.removeBook(container);
             }
             this.setState();
         }
-
     }
 
     addBook(book) {
         let added = false;
         if (!this.isInStorage(book.key)) {
+            console.log("added:");
+            console.log(book);
             added = true;
             this._unmarkedBooks.push(book);
             this.renderUnmarkedBook(book);
-
+            this.setState();
         }
         return added;
-    }
-
-    getBook(id) {
-        return this._booksInfo.books.find(item => item.key === id);
     }
 
     getLocalStorageData() {
@@ -142,7 +145,7 @@ export class BookStorage {
 
         let localStorageJson = localStorage.getItem("booksInfo");
 
-        if (localStorageJson === null || localStorageJson === "[]") {
+        if (localStorageJson === null || localStorageJson === "[]") { // Данных нет
             localStorage.setItem("booksInfo", JSON.stringify({
                 unmarkedBooks: [],
                 markedBooks: []
@@ -151,7 +154,7 @@ export class BookStorage {
                 unmarkedBooks: [],
                 markedBooks: []
             }
-        } else {
+        } else { // Данные есть
             try {
                 result = JSON.parse(localStorage.getItem("booksInfo"));
             } catch (e) {
