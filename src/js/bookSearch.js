@@ -26,8 +26,8 @@ export class BookSearch {
         searchButton.addEventListener("click", this.processSearch.bind(this));
         this._booksList.addEventListener("click", event => {
             if (event.target.classList.contains("left-column-result-wrapper-results__elem")) {
-                let selectedElem = this._results.find(item => item.key === event.target.dataset.elemId);
-                this._infoUI.showInfo(selectedElem);
+                //let selectedElem = this._results.find(item => item.key === event.target.dataset.elemId);
+                this._infoUI.showInfo(this._results[event.target.dataset.elemId]);
                 this.selectItem(event.target);
             }
         });
@@ -84,8 +84,8 @@ export class BookSearch {
     makeSearchResult(data) {
         let HTML = "";
         if (data.length !== 0) {
-            data.forEach(item => {
-                HTML += `<div class="left-column-result-wrapper-results__elem" data-elem-id = "${item.key}">
+            data.forEach((item, index) => {
+                HTML += `<div class="left-column-result-wrapper-results__elem" data-elem-id = "${index + (this._currentPage - 1) * 100}">
                         ${item.title} (${item.language === undefined ? "no info" : item.language.join(", ")})
                         </div>`;
             });

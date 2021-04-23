@@ -130,8 +130,6 @@ export class BookStorage {
     addBook(book) {
         let added = false;
         if (!this.isInStorage(book.key)) {
-            console.log("added:");
-            console.log(book);
             added = true;
             this._unmarkedBooks.push(book);
             this.renderUnmarkedBook(book);
