@@ -6,8 +6,6 @@ export class BookStorage {
         this._markedBooksContainer = document.getElementById("to-read-marked");
         this._unmarkedBooksContainer = document.getElementById("to-read-unmarked");
 
-        console.log(this.getLocalStorageData());
-
         const { unmarkedBooks, markedBooks } = this.getLocalStorageData();
 
         this._unmarkedBooks = unmarkedBooks;

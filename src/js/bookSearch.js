@@ -20,10 +20,8 @@ export class BookSearch {
         this._searchInput.value = "";
         this._currentPage = 0;
         this._currentRequest = "";
+        this._debounceTimeoutID = null;
 
-        const searchButton = document.getElementById("search-button");
-
-        searchButton.addEventListener("click", this.processSearch.bind(this));
         this._booksList.addEventListener("click", event => {
             if (event.target.classList.contains("left-column-result-wrapper-results__elem")) {
                 this._infoUI.showInfo(this._results[event.target.dataset.elemId]);
@@ -33,10 +31,18 @@ export class BookSearch {
 
         this._searchInput.addEventListener("input", event => {
             if (this._searchInput.value.length >= 3) {
-                console.log("fetch");
+
+                if (this._debounceTimeoutID) {
+                    this._api.stopFetch();
+                    clearTimeout(this._debounceTimeoutID);
+                }
+
+                this._debounceTimeoutID = setTimeout(() => {
+                    this._debounceTimeoutID = null;
+                    this.processSearch(event);
+                }, 500);
             }
         });
-
 
         this._resultContainer.addEventListener("scroll", () => {
             if (!this._fetchBlock && this._resultContainer.scrollTop + this._resultContainer.clientHeight + 6000 > this._resultContainer.scrollHeight) {
@@ -48,6 +54,7 @@ export class BookSearch {
     processSearch(event) {
         event.preventDefault();
         if (this._currentRequest !== this._searchInput.value && this._searchInput.value !== "") {
+            this._results = [];
             this._booksList.innerHTML = "";
             this._currentRequest = this._searchInput.value;
             this.loadData();
@@ -103,7 +110,6 @@ export class BookSearch {
     }
 
     processSearchError(err) {
-        console.log(`Error occurred:`);
         console.log(err);
     }
 
@@ -111,12 +117,12 @@ export class BookSearch {
         if (this._selectedPage) {
             this._selectedPage.classList.remove("left-column-result-wrapper__elem_selected");
         }
+
         item.classList.add("left-column-result-wrapper__elem_selected");
         this._selectedPage = item;
     }
 
     showLoadingMessage() {
-        console.log('block');
         this._loadingMessage.style.display = "block";
     }
 
