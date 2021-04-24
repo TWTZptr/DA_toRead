@@ -77,35 +77,41 @@ export class BookStorage {
     }
 
     removeBook(container) {
+
         if (container.classList.contains("marked")) {
-            const bookToDeleteIndex = this._markedBooks.indexOf(item => item.key === container.id);
+            const bookToDeleteIndex = this._markedBooks.findIndex(item => item.key === container.id);
             this._markedBooks.splice(bookToDeleteIndex, 1);
         } else {
-            const bookToDeleteIndex = this._unmarkedBooks.indexOf(item => item.key === container.id);
+            const bookToDeleteIndex = this._unmarkedBooks.findIndex(item => item.key === container.id);
             this._unmarkedBooks.splice(bookToDeleteIndex, 1);
         }
+
         container.remove();
         this.setState();
     }
 
     markBook(container, {target}) {
+
         container.classList.add("marked");
         target.innerText = "Unmark";
-        target.dataset.action="unmark";
+        target.dataset.action = "unmark";
 
         const bookToMarkIndex = this._unmarkedBooks.findIndex(item => item.key === container.id);
         this._markedBooks.push(this._unmarkedBooks[bookToMarkIndex]);
+
         this._unmarkedBooks.splice(bookToMarkIndex, 1);
         this._markedBooksContainer.insertAdjacentElement('beforeend', container); // перемещаем в конец отмеченных
     }
 
     unmarkBook(container, {target}) {
+
         container.classList.remove("marked");
         target.innerText = "Mark as read";
         target.dataset.action = "mark";
 
         const bookToUnmarkIndex = this._markedBooks.findIndex(item => item.key === container.id);
         this._unmarkedBooks.push(this._markedBooks[bookToUnmarkIndex]);
+
         this._markedBooks.splice(bookToUnmarkIndex, 1);
         this._unmarkedBooksContainer.insertAdjacentElement('beforeend', container); // перемещаем в конец неотмеченных
     }
@@ -120,7 +126,6 @@ export class BookStorage {
                     this.unmarkBook(container, event);
                 }
             } else {
-                // remove book
                 this.removeBook(container);
             }
             this.setState();

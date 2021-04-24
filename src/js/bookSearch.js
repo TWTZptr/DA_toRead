@@ -26,11 +26,17 @@ export class BookSearch {
         searchButton.addEventListener("click", this.processSearch.bind(this));
         this._booksList.addEventListener("click", event => {
             if (event.target.classList.contains("left-column-result-wrapper-results__elem")) {
-                //let selectedElem = this._results.find(item => item.key === event.target.dataset.elemId);
                 this._infoUI.showInfo(this._results[event.target.dataset.elemId]);
                 this.selectItem(event.target);
             }
         });
+
+        this._searchInput.addEventListener("input", event => {
+            if (this._searchInput.value.length >= 3) {
+                console.log("fetch");
+            }
+        });
+
 
         this._resultContainer.addEventListener("scroll", () => {
             if (!this._fetchBlock && this._resultContainer.scrollTop + this._resultContainer.clientHeight + 6000 > this._resultContainer.scrollHeight) {
